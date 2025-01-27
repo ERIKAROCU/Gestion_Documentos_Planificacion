@@ -12,9 +12,23 @@ use Illuminate\Support\Facades\Auth;
 class DocumentController extends Controller
 {
     // Mostrar todos los documentos
-    public function index()
+    public function index(Request $request)
     {
-        $documents = Document::with('files')->get();
+        $query = $request->input('q');
+
+        $documents = Document::with('files') // Asegúrate de cargar las relaciones necesarias.
+            ->when($query, function ($queryBuilder) use ($query) {
+                $queryBuilder->where('titulo', 'like', "%$query%")
+                            ->orWhere('origen', 'like', "%$query%")
+                            ->orWhereDate('fecha_ingreso', 'like', "%$query%");
+            })
+            ->paginate(10); // Pagina los resultados para evitar cargar demasiados datos.
+
+        // Verificar si la solicitud es AJAX
+        if ($request->ajax()) {
+            return view('documents-components.table', compact('documents'))->render();
+        }
+
         return view('documents.index', compact('documents'));
     }
 
@@ -137,4 +151,5 @@ class DocumentController extends Controller
 
         return view('documents.update-derivation', compact('document', 'trabajadores'));
     }
+
 }

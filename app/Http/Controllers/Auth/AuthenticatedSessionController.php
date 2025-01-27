@@ -7,6 +7,8 @@ use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
@@ -24,10 +26,30 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
+        // Obtener el usuario que intenta iniciar sesión
+        $user = \App\Models\User::where('email', $request->email)->first();
 
+        // Verificar si el usuario existe y si la contraseña es correcta
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            throw ValidationException::withMessages([
+                'email' => ['Las credenciales no coinciden con nuestros registros.'],
+            ]);
+        }
+
+        // Verificar si el usuario está activo
+        if (!$user->is_active) {
+            throw ValidationException::withMessages([
+                'email' => ['Este usuario está inactivo.'],
+            ]);
+        }
+
+        // Autenticar al usuario
+        Auth::login($user);
+
+        // Regenerar la sesión
         $request->session()->regenerate();
 
+        // Redirigir al destino previsto
         return redirect()->intended(route('dashboard', absolute: false));
     }
 

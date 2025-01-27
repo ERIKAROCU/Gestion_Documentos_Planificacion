@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\FileController;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -42,6 +43,19 @@ Route::get('/admin', function () {
 });
 
 Route::put('/documents/{document}/update-derivation', [DocumentController::class, 'updateDerivation'])->name('documents.update-derivation');
+
+// routes/web.php
+Route::get('/documents/search', [DocumentController::class, 'search'])->name('documents.search');
+
+
+
+
+
+Route::resource('users', UserController::class);
+Route::get('/users', [UserController::class, 'index'])->name('users.index');
+
+Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
 
 
 require __DIR__.'/auth.php';

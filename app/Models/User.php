@@ -23,7 +23,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'is_active',
         'role',
+        'dni',
     ];
 
     // Asegúrate de que esté usando la tabla 'users'
