@@ -5,6 +5,7 @@ USE document_manager;
 select*from users;
 select*from documents;
 select*from files;
+select*from oficinas;
 
 update users set role = 'admin' where id = 1;
 

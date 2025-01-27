@@ -1,26 +1,38 @@
-<table class="table table-bordered">
+<table class="min-w-full table-auto border-collapse">
     <thead>
-        <tr>
-            <th>Nombre</th>
-            <th>DNI</th>
-            <th>Email</th>
-            <th>Estado</th>
-            <th>Acciones</th>
+        <tr class="bg-gray-100 text-left">
+            <th class="px-4 py-2 font-semibold text-sm text-gray-600 border-b">Nombre</th>
+            <th class="px-4 py-2 font-semibold text-sm text-gray-600 border-b">DNI</th>
+            <th class="px-4 py-2 font-semibold text-sm text-gray-600 border-b">Email</th>
+            <th class="px-4 py-2 font-semibold text-sm text-gray-600 border-b">Estado</th>
+            <th class="px-4 py-2 font-semibold text-sm text-gray-600 border-b">Acciones</th>
         </tr>
     </thead>
     <tbody>
         @foreach ($users as $user)
-            <tr>
-                <td>{{ $user->name }}</td>
-                <td>{{ $user->dni }}</td>
-                <td>{{ $user->email }}</td>
-                <td>{{ $user->is_active ? 'Activo' : 'Inactivo' }}</td>
-                <td>
-                    <a href="{{ route('users.edit', $user) }}" class="btn btn-warning">Editar</a>
-                    <form action="{{ route('users.destroy', $user) }}" method="POST" style="display:inline;">
+            <tr class="border-t hover:bg-gray-50">
+                <td class="px-4 py-2 text-sm text-gray-700">{{ $user->name }}</td>
+                <td class="px-4 py-2 text-sm text-gray-700">{{ $user->dni }}</td>
+                <td class="px-4 py-2 text-sm text-gray-700">{{ $user->email }}</td>
+                <td class="px-4 py-2 text-sm text-gray-700">
+                    {{ $user->is_active ? 'Activo' : 'Inactivo' }}
+                </td>
+                <td class="px-4 py-2 text-sm text-gray-700 flex space-x-2">
+                    <a href="{{ route('users.edit', $user) }}" 
+                       class="inline-block bg-yellow-500 text-white py-2 px-4 rounded-md hover:bg-yellow-600"
+                       data-bs-toggle="modal" 
+                       data-bs-target="#usersModal" 
+                       data-url="{{ route('users.edit', $user) }}"
+                       data-title="Editar Usuario">
+                        Editar
+                    </a>
+
+                    <form action="{{ route('users.destroy', $user) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este usuario? Esta acción no se puede deshacer.')">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                        <button type="submit" class="inline-block bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700">
+                            Eliminar
+                        </button>
                     </form>
                 </td>
             </tr>

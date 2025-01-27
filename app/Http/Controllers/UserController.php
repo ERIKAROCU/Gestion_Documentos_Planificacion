@@ -16,6 +16,12 @@ class UserController extends Controller
 
     public function index(Request $request)
     {
+        if (!Auth::check()) {
+            return redirect()->route('login');
+        }
+    
+        $role = Auth::user()->role;
+        
         // Verificar si el usuario autenticado es administrador
         if (Auth::user()->role !== 'admin') {
             abort(403, 'No tienes permiso para acceder a esta página.');
@@ -28,19 +34,31 @@ class UserController extends Controller
         $users = User::query()
             ->when($search, function($query, $search) {
                 return $query->where('name', 'like', "%{$search}%")
+                            ->orWhere('dni', 'like', "%{$search}%")
                             ->orWhere('email', 'like', "%{$search}%");
             })
+            ->orderBy('name', 'asc')
             ->paginate(10); // Paginación de 10 usuarios por página
+
+        // Verificar si la solicitud es AJAX
+        if ($request->ajax()) {
+            return view('users-components.table', compact('users'))->render();
+        }
 
         // Devolver la vista con los usuarios filtrados
         return view('users.index', compact('users'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
         // Verificar si el usuario autenticado es administrador
         if (Auth::user()->role !== 'admin') {
             abort(403, 'No tienes permiso para acceder a esta página.');
+        }
+
+        // Si la solicitud es AJAX, devolver solo el contenido del formulario
+        if ($request->ajax()) {
+            return view('users-components.create-form')->render(); // Vista parcial
         }
 
         // Lógica para mostrar el formulario de creación
@@ -87,18 +105,26 @@ class UserController extends Controller
 
     public function update(Request $request, $id)
     {
+        if (Auth::user()->role !== 'admin') {
+            abort(403, 'No tienes permiso para acceder a esta página.');
+        }
+
         $user = User::findOrFail($id);
 
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $user->id,
+            'dni' => 'required',
             'is_active' => 'required|boolean',
+            'role' => 'required',
             'password' => 'nullable|string|min:8|confirmed', // Hacemos que sea opcional
         ]);
 
         // Actualizar los datos del usuario
         $user->name = $request->name;
         $user->email = $request->email;
+        $user->dni = $request->dni;
+        $user->role = $request->role;
         $user->is_active = $request->is_active;
 
         // Si se proporciona una nueva contraseña, actualizarla
@@ -111,5 +137,18 @@ class UserController extends Controller
 
         return redirect()->route('users.index')->with('success', 'Usuario actualizado con éxito.');
     }
+
+    public function destroy(User $user)
+    {
+        if (Auth::user()->role !== 'admin') {
+            abort(403, 'No tienes permiso para acceder a esta página.');
+        }
+        
+        $user->delete();
+
+        return redirect()->route('users.index')
+            ->with('success', 'Usuario eliminado correctamente.');
+    }
+
 
 }

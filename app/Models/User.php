@@ -59,5 +59,10 @@ class User extends Authenticatable
         return $this->hasMany(Document::class, 'trabajador_id');
     }
     
+    // Relación con Document
+    public function document()
+    {
+        return $this->belongsTo(Document::class);
+    }
 
 }

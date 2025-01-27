@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Document;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Oficina;
 
 
 
@@ -14,6 +15,12 @@ class DocumentController extends Controller
     // Mostrar todos los documentos
     public function index(Request $request)
     {
+        if (!Auth::check()) {
+            return redirect()->route('login');
+        }
+    
+        $role = Auth::user()->role;
+        
         $query = $request->input('q');
 
         $documents = Document::with('files') // Asegúrate de cargar las relaciones necesarias.
@@ -22,6 +29,7 @@ class DocumentController extends Controller
                             ->orWhere('origen', 'like', "%$query%")
                             ->orWhereDate('fecha_ingreso', 'like', "%$query%");
             })
+            ->orderBy('id', 'desc')
             ->paginate(10); // Pagina los resultados para evitar cargar demasiados datos.
 
         // Verificar si la solicitud es AJAX
@@ -35,7 +43,8 @@ class DocumentController extends Controller
     // Mostrar formulario para crear un nuevo documento
     public function create()
     {
-        return view('documents.create');
+        $oficinas = Oficina::all();
+        return view('documents.create', compact('oficinas'));
     }
 
     // Guardar un nuevo documento
@@ -66,8 +75,10 @@ class DocumentController extends Controller
         if (request()->ajax()) {
             return view('documents.edit', compact('document'))->render();
         }
+
+        $oficinas = Oficina::all(); 
     
-        return view('documents.edit', compact('document'));
+        return view('documents.edit', compact('document', 'oficinas'));
     }
 
     // Actualizar un documento
@@ -149,7 +160,9 @@ class DocumentController extends Controller
         $document = Document::findOrFail($id);
         $trabajadores = User::all(); // Obtener todos los trabajadores (suponiendo que tienes un modelo Trabajador)
 
-        return view('documents.update-derivation', compact('document', 'trabajadores'));
+        $oficinas = Oficina::all(); 
+
+        return view('documents.update-derivation', compact('document', 'trabajadores', 'oficinas'));
     }
 
 }

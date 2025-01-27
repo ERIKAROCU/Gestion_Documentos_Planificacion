@@ -6,6 +6,7 @@ use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\FileController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AdminDocumentsController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -56,6 +57,10 @@ Route::get('/users', [UserController::class, 'index'])->name('users.index');
 
 Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
 Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+
+
+Route::resource('ad', AdminDocumentsController::class);
+Route::get('/admin-documents', [AdminDocumentsController::class, 'index'])->name('ad.index');
 
 
 require __DIR__.'/auth.php';

@@ -33,10 +33,26 @@
                         </div>
 
                         <!-- Origen (Oficina) -->
-                        <div class="mb-4">
+                        {{-- <div class="mb-4">
                             <label for="origen" class="block text-gray-700">Origen (Oficina)</label>
                             <input type="text" name="origen" id="origen" class="form-input mt-1 block w-full"
                                 value="{{ old('origen') }}" required>
+                            @error('origen')
+                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                            @enderror
+                        </div> --}}
+
+                        <!-- Origen (Oficina) -->
+                        <div class="mb-4">
+                            <label for="origen" class="block text-gray-700">Origen (Oficina)</label>
+                            <select name="origen" id="origen" class="form-input mt-1 block w-full" required>
+                                <option value="">Seleccionar Oficina</option>
+                                @foreach ($oficinas as $oficina)
+                                    <option value="{{ $oficina->nombre }}" {{ old('origen') == $oficina->nombre ? 'selected' : '' }}>
+                                        {{ $oficina->nombre }}
+                                    </option>
+                                @endforeach
+                            </select>
                             @error('origen')
                                 <span class="text-red-500 text-sm">{{ $message }}</span>
                             @enderror

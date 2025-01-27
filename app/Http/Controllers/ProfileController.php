@@ -40,7 +40,12 @@ class ProfileController extends Controller
     /**
      * Delete the user's account.
      */
+
     public function destroy(Request $request): RedirectResponse
+    {
+        return Redirect::route('profile.edit')->with('status', 'No puedes eliminar la cuenta');
+    }
+    /* public function destroy(Request $request): RedirectResponse
     {
         $request->validateWithBag('userDeletion', [
             'password' => ['required', 'current_password'],
@@ -56,5 +61,5 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return Redirect::to('/');
-    }
+    } */
 }
