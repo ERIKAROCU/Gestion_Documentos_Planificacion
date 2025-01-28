@@ -30,14 +30,17 @@
 
                     <div class="mb-4">
                         <strong>Derivado:</strong> 
-                        {{ $document->derivado ?? 'No hay registro de derivado' }}
-                    </div>
+                        {{ $document->derivado }}
+                        @if (empty($document->derivado))
+                            <span class="text-sm text-red-700"> No hay registro de derivado.</span>
+                        @endif
+                    </div> 
                     
                     <div class="mb-4">
                         <strong>Fecha de Salida:</strong> 
                         {{ $document->fecha_salida }}
                         @if (empty($document->fecha_salida))
-                            <span class="text-red-700"> No hay registro de fecha de salida.</span>
+                            <span class="text-sm text-red-700"> No hay registro de fecha de salida.</span>
                         @endif
                     </div> 
                     

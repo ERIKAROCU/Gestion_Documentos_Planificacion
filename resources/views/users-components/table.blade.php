@@ -27,13 +27,13 @@
                         Editar
                     </a>
 
-                    <form action="{{ route('users.destroy', $user) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este usuario? Esta acción no se puede deshacer.')">
+                    {{-- <form action="{{ route('users.destroy', $user) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este usuario? Esta acción no se puede deshacer.')">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="inline-block bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700">
                             Eliminar
                         </button>
-                    </form>
+                    </form> --}}
                 </td>
             </tr>
         @endforeach
