@@ -9,11 +9,8 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <!-- Botón para crear nuevo usuario -->
-                    {{-- <a href="{{ route('users.create') }}" class="btn btn-primary mb-4">Nuevo Usuario</a> --}}
-                    <a href="{{ route('users.create') }}" class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#usersModal" data-url="{{ route('users.create') }}" data-title="Nuevo Usuario">
-                        Nuevo Usuario
-                    </a>
+                    <!-- Componente Livewire para crear usuario -->
+                    @livewire('create-user')
 
                     <!-- Formulario de búsqueda -->
                     @include('users-components.search')
@@ -21,14 +18,15 @@
                     @if ($users->isEmpty())
                         <p>No hay usuarios registrados.</p>
                     @else
-                        @include('users-components.table', ['documents' => $users])
+                        @include('users-components.table', ['users' => $users]) <!-- Asegúrate de pasar 'users' y no 'documents' -->
                         {{ $users->links() }}
                     @endif
                 </div>
             </div>
-            @include('users-components.modal')
         </div>
     </div>
 
-    @include('users-components.scripts')
+    <!-- Scripts de Bootstrap y Livewire -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    @livewireScripts
 </x-app-layout>

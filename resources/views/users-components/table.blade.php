@@ -18,22 +18,21 @@
                     {{ $user->is_active ? 'Activo' : 'Inactivo' }}
                 </td>
                 <td class="px-4 py-2 text-sm text-gray-700 flex space-x-2">
-                    <a href="{{ route('users.edit', $user) }}" 
-                       class="inline-block bg-yellow-500 text-white py-2 px-4 rounded-md hover:bg-yellow-600"
-                       data-bs-toggle="modal" 
-                       data-bs-target="#usersModal" 
-                       data-url="{{ route('users.edit', $user) }}"
-                       data-title="Editar Usuario">
-                        Editar
-                    </a>
+                    
+                    @livewire('edit-user', ['user' => $user], key($user->id))
 
-                    {{-- <form action="{{ route('users.destroy', $user) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este usuario? Esta acción no se puede deshacer.')">
+                    {{-- <button wire:click="$emit('editUser', {{ $user->id }})" class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">
+                        Editar
+                    </button>   --}}                  
+
+
+                    <form action="{{ route('users.destroy', $user) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este usuario? Esta acción no se puede deshacer.')">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="inline-block bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700">
                             Eliminar
                         </button>
-                    </form> --}}
+                    </form>
                 </td>
             </tr>
         @endforeach

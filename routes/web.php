@@ -7,9 +7,11 @@ use App\Http\Controllers\FileController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminDocumentsController;
+use App\Http\Livewire\CreateUser;
+use App\Http\Livewire\EditUser;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
 
 Route::get('/dashboard', function () {
@@ -61,6 +63,21 @@ Route::put('/users/{user}', [UserController::class, 'update'])->name('users.upda
 
 Route::resource('ad', AdminDocumentsController::class);
 Route::get('/admin-documents', [AdminDocumentsController::class, 'index'])->name('ad.index');
+
+
+
+Route::get('/users', [UserController::class, 'index'])->name('users.index');
+Route::get('/users/create', CreateUser::class)->name('users.create');
+
+Route::get('/users/{user}/edit', EditUser::class)->name('users.edit');
+
+/* Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+Route::get('/users/{user}/edit', \App\Http\Livewire\EditUser::class)->name('users.edit'); */
+
+Route::get('/users', [UserController::class, 'index'])->name('users.index');
+Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+// Otras rutas necesarias...
+
 
 
 require __DIR__.'/auth.php';

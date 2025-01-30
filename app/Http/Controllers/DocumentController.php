@@ -26,7 +26,9 @@ class DocumentController extends Controller
         $documents = Document::with('files') // Asegúrate de cargar las relaciones necesarias.
             ->when($query, function ($queryBuilder) use ($query) {
                 $queryBuilder->where('titulo', 'like', "%$query%")
+                            ->orWhere('numero_documento', 'like', "%$query%")
                             ->orWhere('origen', 'like', "%$query%")
+                            ->orWhere('derivado', 'like', "%$query%")
                             ->orWhereDate('fecha_ingreso', 'like', "%$query%");
             })
             ->orderBy('id', 'desc')

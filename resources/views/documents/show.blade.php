@@ -57,9 +57,9 @@
                     </div>
 
                     <div class="mt-4 flex space-x-2">
-                        <a href="{{ route('documents.edit', $document->id) }}" class="bg-yellow-500 text-white py-2 px-4 rounded-md hover:bg-yellow-600">
+                        {{-- <a href="{{ route('documents.edit', $document->id) }}" class="bg-yellow-500 text-white py-2 px-4 rounded-md hover:bg-yellow-600">
                             Editar
-                        </a>
+                        </a> --}}
                         {{-- <form action="{{ route('documents.destroy', $document->id) }}" method="POST" style="display: inline-block;">
                             @csrf
                             @method('DELETE')

@@ -5,15 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\StoreUserRequest;
 
 class UserController extends Controller
 {
-    /* public function __construct()
-    {
-        // Solo usuarios autenticados pueden acceder a las acciones
-        $this->middleware(['auth', 'role:admin']);
-    } */
-
     public function index(Request $request)
     {
         if (!Auth::check()) {
@@ -40,11 +35,6 @@ class UserController extends Controller
             ->orderBy('name', 'asc')
             ->paginate(10); // Paginación de 10 usuarios por página
 
-        // Verificar si la solicitud es AJAX
-        if ($request->ajax()) {
-            return view('users-components.table', compact('users'))->render();
-        }
-
         // Devolver la vista con los usuarios filtrados
         return view('users.index', compact('users'));
     }
@@ -56,37 +46,24 @@ class UserController extends Controller
             abort(403, 'No tienes permiso para acceder a esta página.');
         }
 
-        // Si la solicitud es AJAX, devolver solo el contenido del formulario
-        if ($request->ajax()) {
-            return view('users-components.create-form')->render(); // Vista parcial
-        }
-
-        // Lógica para mostrar el formulario de creación
         return view('users.create');
     }
 
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
         // Verificar si el usuario tiene el rol de admin
         if (Auth::user()->role !== 'admin') {
             return redirect('/')->with('error', 'No tienes permiso para acceder a esta página.');
         }
 
-        // Lógica de almacenamiento de usuario
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
-            'is_active' => 'required|boolean',
-            'dni' => 'required|size:8'
-        ]);
-
-        $user = User::create([
+        // Crear el usuario
+        User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => bcrypt($request->password),
             'is_active' => $request->is_active,
             'dni' => $request->dni,
+            'role' => $request->role,
         ]);
 
         return redirect()->route('users.index')->with('success', 'Usuario creado con éxito.');
@@ -149,6 +126,4 @@ class UserController extends Controller
         return redirect()->route('users.index')
             ->with('success', 'Usuario eliminado correctamente.');
     }
-
-
 }
